@@ -1,25 +1,36 @@
 package com.compose.filteredlist
 
-import android.media.Image
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.Composable
-import androidx.compose.Model
 import androidx.compose.state
+import androidx.ui.core.Alignment
+import androidx.ui.core.Modifier
 import androidx.ui.core.setContent
-import androidx.ui.foundation.*
-import androidx.ui.layout.Column
-import androidx.ui.layout.Row
+import androidx.ui.foundation.Image
+import androidx.ui.foundation.Text
+import androidx.ui.foundation.TextField
+import androidx.ui.foundation.VerticalScroller
+import androidx.ui.graphics.Color
+import androidx.ui.layout.*
 import androidx.ui.material.MaterialTheme
+import androidx.ui.material.Surface
+import androidx.ui.res.vectorResource
+import androidx.ui.text.TextStyle
 import androidx.ui.tooling.preview.Preview
+import androidx.ui.unit.TextUnit
+import androidx.ui.unit.dp
+import androidx.ui.unit.sp
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             MaterialTheme {
-                //                Greeting("Android")
-                FilteredList(contacts = contactList, filterText = "")
+                Column() {
+                    //                    Greeting("An")
+                    FilteredList(contacts = contactList)
+                }
             }
         }
     }
@@ -30,11 +41,20 @@ fun FilteredList(contacts: List<Contact>, filterText: String = "") {
     val state = state { filterText }
     VerticalScroller {
         Column {
-            TextField(filterText, onValueChange = { state.value = it }) @Composable() {
-                contacts.filter { it.name.contains(state.value) }.forEach {
-                    Row {
-                        Text(text = it.name)
-                    }
+            Surface(color = Color.Gray) {
+                TextField(
+                    state.value,
+                    onValueChange = { state.value = it },
+                    textStyle = TextStyle(color = Color.Black),
+                    modifier = Modifier.padding(10.dp),
+                    focusIdentifier = "Type"
+                )
+            }
+            Spacer(modifier = Modifier.preferredSize(10.dp))
+            contacts.filter { it.name.contains(state.value) }.forEach {
+                Row(modifier = Modifier.padding(10.dp)) {
+//                    Image(asset = vectorResource(id = it.photo))
+                    Text(text = it.name, modifier = Modifier.padding(10.dp), style = TextStyle(fontSize = TextUnit.Sp(18)))
                 }
             }
         }
@@ -50,15 +70,26 @@ fun Greeting(name: String) {
 @Composable
 fun DefaultPreview() {
     MaterialTheme {
-        Greeting("Android")
+        Column() {
+            Greeting("An")
+            FilteredList(contacts = contactList, filterText = "")
+        }
     }
 }
 
-@Model
-class ContactState() {
+class Contact(var photo: Int = R.drawable.ic_launcher_background, var name: String)
 
-}
-
-class Contact(var name: String)
-
-val contactList = listOf<Contact>(Contact("ABC"), Contact("BCD"))
+val contactList = listOf(
+    Contact(name = "test1"),
+    Contact(name = "test2"),
+    Contact(name = "test3"),
+    Contact(name = "test4"),
+    Contact(name = "test5"),
+    Contact(name = "test6"),
+    Contact(name = "test7"),
+    Contact(name = "test8"),
+    Contact(name = "test9"),
+    Contact(name = "test10"),
+    Contact(name = "test11"),
+    Contact(name = "test12")
+)
