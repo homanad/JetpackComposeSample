@@ -11,6 +11,7 @@ import androidx.ui.foundation.Image
 import androidx.ui.foundation.Text
 import androidx.ui.foundation.TextField
 import androidx.ui.foundation.VerticalScroller
+import androidx.ui.foundation.gestures.scrollable
 import androidx.ui.graphics.Color
 import androidx.ui.layout.*
 import androidx.ui.material.MaterialTheme
@@ -26,37 +27,48 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MaterialTheme {
-                Column() {
-                    //                    Greeting("An")
-                    FilteredList(contacts = contactList)
-                }
+            MyApp {
+                FilteredList(contacts = contactList)
             }
         }
     }
 }
 
 @Composable
+fun MyApp(children: @Composable() () -> Unit) {
+    MaterialTheme {
+        children()
+    }
+}
+
+@Composable
 fun FilteredList(contacts: List<Contact>, filterText: String = "") {
     val state = state { filterText }
-    VerticalScroller {
-        Column {
-            Surface(color = Color.Gray) {
-                TextField(
-                    state.value,
-                    onValueChange = { state.value = it },
-                    textStyle = TextStyle(color = Color.Black),
-                    modifier = Modifier.padding(10.dp),
-                    focusIdentifier = "Type"
-                )
-            }
-            Spacer(modifier = Modifier.preferredSize(10.dp))
-            contacts.filter { it.name.contains(state.value) }.forEach {
-                Row(modifier = Modifier.padding(10.dp)) {
-//                    Image(asset = vectorResource(id = it.photo))
-                    Text(text = it.name, modifier = Modifier.padding(10.dp), style = TextStyle(fontSize = TextUnit.Sp(18)))
+    Column {
+        Surface(color = Color.Gray) {
+            TextField(
+                state.value,
+                onValueChange = { state.value = it },
+                textStyle = TextStyle(color = Color.Black),
+                modifier = Modifier.padding(10.dp),
+                focusIdentifier = "Type"
+            )
+        }
+        Spacer(modifier = Modifier.preferredSize(10.dp))
+        VerticalScroller {
+            Column {
+                contacts.filter { it.name.contains(state.value) }.forEach {
+                    Row(modifier = Modifier.padding(10.dp)) {
+                        //                    Image(asset = vectorResource(id = it.photo))
+                        Text(
+                            text = it.name,
+                            modifier = Modifier.padding(10.dp),
+                            style = TextStyle(fontSize = TextUnit.Sp(18))
+                        )
+                    }
                 }
             }
+
         }
     }
 }
